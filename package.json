@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -37,7 +38,7 @@
     "productName": "پرگار",
     "files": ["dist/**/*", "electron/**/*", "capacitor.config.ts", "package.json"],
     "directories": {"output": "release"},
-    "win": {"target": [{"target": "nsis", "arch": ["x64"]}], "icon": "public/icon.svg"},
+    "win": {"target": [{"target": "nsis", "arch": ["x64"]}]},
     "nsis": {"oneClick": false, "allowToChangeInstallationDirectory": true}
   }
 }
