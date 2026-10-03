@@ -1,0 +1,1 @@
+export const canvasTheme={paper:"#fffdf8",grid:"#e7e1d2",gridMajor:"#d9d1bf",axis:"#9a9486",ink:"#1c1a16",muted:"#6e6a60",subtle:"#9a9486",accent:"#21564c",accentFill:"rgba(33, 86, 76, 0.14)",hover:"#3d7a6c",pointFill:"#fffdf8",select:"#21564c",ghost:"rgba(28, 26, 22, 0.45)",angle:"#21564c"} as const;
