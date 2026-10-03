@@ -4,6 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# CI builds the same full client app for Windows and Android.
 jobs:
   checks:
     runs-on: ubuntu-latest
