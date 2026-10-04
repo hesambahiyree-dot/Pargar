@@ -1,6 +1,105 @@
-import { useEffect, useRef, useState } from "react"; import { Maximize2 } from "lucide-react"; import { boardBounds, getPoint, hitTest, isDraggable, pointById } from "@/lib/geometry/engine"; import { faNum } from "@/lib/geometry/format"; import { useBoard } from "@/lib/geometry/store"; import { Button } from "@/components/ui/button";
-export function GeometryCanvas(){const ref=useRef<HTMLCanvasElement>(null);const wrap=useRef<HTMLDivElement>(null);const [cam,setCam]=useState({x:0,y:0,scale:55});const objects=useBoard(s=>s.objects),settings=useBoard(s=>s.settings),selected=useBoard(s=>s.selected),pending=useBoard(s=>s.pending),tool=useBoard(s=>s.tool),click=useBoard(s=>s.click),movePoint=useBoard(s=>s.movePoint),fitNonce=useBoard(s=>s.fitNonce);const drag=useRef<{id:string;ox:number;oy:number}|null>(null);
-const fit=()=>{const c=ref.current,w=c?.clientWidth??800,h=c?.clientHeight??600,b=boardBounds(objects);if(!b){setCam({x:w/2,y:h/2,scale:55});return}const sx=w/Math.max(8,b.maxX-b.minX+3),sy=h/Math.max(8,b.maxY-b.minY+3),scale=Math.min(90,Math.max(25,Math.min(sx,sy)));setCam({x:w/2-(b.minX+b.maxX)*scale/2,y:h/2+(b.minY+b.maxY)*scale/2,scale})};useEffect(()=>{fit()},[fitNonce]);
-useEffect(()=>{const c=ref.current;if(!c)return;const ctx=c.getContext("2d")!,d=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*d;c.height=h*d;ctx.setTransform(d,0,0,d,0,0);ctx.fillStyle="#fffdf8";ctx.fillRect(0,0,w,h);const sx=cam.x,sy=cam.y,s=cam.scale;const step=s;ctx.strokeStyle="#eee8dc";ctx.lineWidth=1;for(let x=((sx%step)+step)%step;x<w;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=((sy%step)+step)%step;y<h;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}if(settings.axes){ctx.strokeStyle="#aaa396";ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,h);ctx.moveTo(0,sy);ctx.lineTo(w,sy);ctx.stroke()}const pts=pointById(objects),W=(p:{x:number;y:number})=>({x:sx+p.x*s,y:sy-p.y*s}),drawLine=(a:any,b:any,dashed=false)=>{ctx.setLineDash(dashed?[6,5]:[]);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.setLineDash([])};ctx.lineWidth=2;for(const o of objects){ctx.strokeStyle="#21564c";if(o.kind==="polygon")ctx.fillStyle=o.fill??"rgba(33,86,76,.12)";if(o.kind==="point"||o.kind==="angle")continue;if(o.kind==="segment"||o.kind==="line"||o.kind==="ray"){const a=pts.get(o.a),b=pts.get(o.b);if(!a||!b)continue;const A=W(a),B=W(b);drawLine(A,B,!!o.dashed);if(o.kind!=="segment"){const dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1;const ex=dx/L*3000,ey=dy/L*3000;ctx.strokeStyle="#21564c";ctx.beginPath();ctx.moveTo(o.kind==="ray"?A.x:A.x-ex,A.y-(o.kind==="ray"?0:ey));if(o.kind==="ray")ctx.lineTo(A.x+ex,A.y+ey);else ctx.lineTo(A.x+ex,A.y+ey);ctx.stroke()}}if(o.kind==="circle"){const c=pts.get(o.center),t=pts.get(o.through);if(c&&t){const C=W(c);ctx.beginPath();ctx.arc(C.x,C.y,Math.hypot((t.x-c.x)*s,(t.y-c.y)*s),0,Math.PI*2);ctx.stroke()}}if(o.kind==="polygon"){const vs=o.verts.map(id=>pts.get(id)).filter(Boolean) as any[];if(vs.length>2){ctx.beginPath();vs.forEach((p,i)=>{const q=W(p);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)});ctx.closePath();ctx.fill();ctx.stroke()}}}
-for(const o of objects){if(o.kind!=="point"||o.hidden)continue;const p=W(o),hi=selected.includes(o.id);ctx.beginPath();ctx.arc(p.x,p.y,hi?7:5,0,Math.PI*2);ctx.fillStyle="#fffdf8";ctx.fill();ctx.strokeStyle=hi?"#21564c":"#21564c";ctx.lineWidth=hi?3:2;ctx.stroke();if(settings.labels&&o.name){ctx.fillStyle="#1c1a16";ctx.font="600 13px Vazirmatn, sans-serif";ctx.fillText(settings.axes?`${o.name} (${faNum(o.x)}, ${faNum(o.y)})`:o.name,p.x+8,p.y-7)}}},[objects,settings,selected,cam,pending,tool]);
-const world=(e:React.PointerEvent)=>{const r=ref.current!.getBoundingClientRect();return{x:(e.clientX-r.left-cam.x)/cam.scale,y:(cam.y-(e.clientY-r.top))/cam.scale}};const down=(e:React.PointerEvent)=>{(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);const p=world(e);const hit=hitTest(objects,p,12/cam.scale);if(tool==="select"&&hit?.kind==="point"){const q=getPoint(objects,hit.id);if(q&&isDraggable(q)){drag.current={id:q.id,ox:p.x-q.x,oy:p.y-q.y};return}}click(p,cam.scale,hit?.id??null,hit?.kind??null)};const move=(e:React.PointerEvent)=>{if(!drag.current)return;const p=world(e);movePoint(drag.current.id,p.x-drag.current.ox,p.y-drag.current.oy)};const up=()=>{drag.current=null};return <div ref={wrap} className="relative h-full w-full touch-none"><canvas ref={ref} className="h-full w-full" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}/><Button className="absolute bottom-3 left-3" size="icon-sm" variant="secondary" onClick={fit} aria-label="جا دادن شکل"><Maximize2 className="size-4"/></Button>{pending&&<div className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full border bg-surface/95 px-3 py-1.5 text-xs shadow-sm">{pending.ids.length} انتخاب</div>}</div>}
+import { Maximize2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { boardBounds, getPoint, hitTest, isDraggable } from "@/lib/geometry/engine";
+import { faNum } from "@/lib/geometry/format";
+import { getLesson } from "@/lib/geometry/lessons";
+import { renderBoard, screenToWorld, type Camera } from "@/lib/geometry/render";
+import { useBoard } from "@/lib/geometry/store";
+import { Button } from "@/components/ui/button";
+
+function fitCamera(cam: Camera, w: number, h: number, objects: ReturnType<typeof useBoard.getState>["objects"]) {
+  const b = boardBounds(objects);
+  if (!b) { cam.scale = 48; cam.ox = w / 2; cam.oy = h / 2; return; }
+  const pad = 72;
+  const bw = Math.max(4, b.maxX - b.minX);
+  const bh = Math.max(3, b.maxY - b.minY);
+  cam.scale = Math.max(28, Math.min(64, Math.min((w - pad * 2) / bw, (h - pad * 2) / bh)));
+  const cx = (b.minX + b.maxX) / 2;
+  const cy = (b.minY + b.maxY) / 2;
+  cam.ox = w / 2 - cx * cam.scale;
+  cam.oy = h / 2 + cy * cam.scale;
+}
+
+export function GeometryCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const camRef = useRef<Camera>({ scale: 48, ox: 0, oy: 0 });
+  const hoverRef = useRef<string | null>(null);
+  const cursorRef = useRef<{ x: number; y: number } | null>(null);
+  const dragRef = useRef<{ id: string; pointerId: number } | null>(null);
+  const panRef = useRef<{ pointerId: number; x: number; y: number; ox: number; oy: number } | null>(null);
+  const pointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchRef = useRef<{ dist: number; scale: number } | null>(null);
+  const spaceRef = useRef(false);
+  const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
+  const [hud, setHud] = useState("");
+  const fitNonce = useBoard((s) => s.fitNonce);
+  const tool = useBoard((s) => s.tool);
+  const fitView = useBoard((s) => s.fitView);
+
+  useEffect(() => {
+    const canvas = canvasRef.current; if (!canvas) return;
+    const parent = canvas.parentElement; if (!parent) return;
+    const resize = () => {
+      const rect = parent.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      sizeRef.current = { w: rect.width, h: rect.height, dpr };
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      const cam = camRef.current;
+      if (cam.ox === 0 && cam.oy === 0) fitCamera(cam, rect.width, rect.height, useBoard.getState().objects);
+    };
+    resize();
+    const ro = new ResizeObserver(resize); ro.observe(parent);
+    let raf = 0;
+    const loop = () => {
+      const ctx = canvas.getContext("2d");
+      const { w, h, dpr } = sizeRef.current;
+      if (ctx && w > 0) {
+        const st = useBoard.getState();
+        const lesson = st.lessonId ? getLesson(st.lessonId) : undefined;
+        const step = lesson?.steps[st.lessonStep];
+        renderBoard(ctx, { objects: st.objects, camera: camRef.current, width: w, height: h, dpr, selected: st.selected, hoverId: hoverRef.current, highlight: step?.highlight ?? [], pending: st.pending, cursor: cursorRef.current, settings: st.settings });
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
+
+  useEffect(() => { const { w, h } = sizeRef.current; if (w > 0) fitCamera(camRef.current, w, h, useBoard.getState().objects); }, [fitNonce]);
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => { if (e.code === "Space") spaceRef.current = true; };
+    const up = (e: KeyboardEvent) => { if (e.code === "Space") spaceRef.current = false; };
+    window.addEventListener("keydown", down); window.addEventListener("keyup", up);
+    return () => { window.removeEventListener("keydown", down); window.removeEventListener("keyup", up); };
+  }, []);
+
+  const local = (e: { clientX: number; clientY: number }) => { const canvas = canvasRef.current!; const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  const onWheel = (e: React.WheelEvent) => {
+    e.preventDefault(); const cam = camRef.current; const p = local(e); const world = screenToWorld(cam, p.x, p.y);
+    const factor = e.deltaY < 0 ? 1.08 : 0.92; cam.scale = Math.max(16, Math.min(140, cam.scale * factor));
+    const after = { x: cam.ox + world.x * cam.scale, y: cam.oy - world.y * cam.scale }; cam.ox += p.x - after.x; cam.oy += p.y - after.y;
+  };
+  const onPointerDown = (e: React.PointerEvent) => {
+    const canvas = canvasRef.current; if (!canvas) return; canvas.setPointerCapture(e.pointerId); const p = local(e); pointersRef.current.set(e.pointerId, p);
+    if (pointersRef.current.size === 2) { const pts = [...pointersRef.current.values()]; const d = Math.hypot(pts[0]!.x - pts[1]!.x, pts[0]!.y - pts[1]!.y); pinchRef.current = { dist: d, scale: camRef.current.scale }; dragRef.current = null; panRef.current = null; return; }
+    const pan = e.button === 1 || e.button === 2 || spaceRef.current;
+    if (pan) { panRef.current = { pointerId: e.pointerId, x: p.x, y: p.y, ox: camRef.current.ox, oy: camRef.current.oy }; return; }
+    const st = useBoard.getState(); const world = screenToWorld(camRef.current, p.x, p.y); const hit = hitTest(st.objects, world, 14 / camRef.current.scale);
+    if (st.tool === "select" && hit?.kind === "point") { const pt = getPoint(st.objects, hit.id); if (pt && isDraggable(pt)) { st.commitHistory(); dragRef.current = { id: hit.id, pointerId: e.pointerId }; st.select([hit.id]); return; } }
+    st.click(world, camRef.current.scale, hit?.id ?? null, hit?.kind ?? null);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    const p = local(e); if (pointersRef.current.has(e.pointerId)) pointersRef.current.set(e.pointerId, p);
+    if (pointersRef.current.size === 2 && pinchRef.current) { const pts = [...pointersRef.current.values()]; const d = Math.hypot(pts[0]!.x - pts[1]!.x, pts[0]!.y - pts[1]!.y); if (pinchRef.current.dist > 8) camRef.current.scale = Math.max(16, Math.min(140, pinchRef.current.scale * (d / pinchRef.current.dist))); return; }
+    if (panRef.current && panRef.current.pointerId === e.pointerId) { camRef.current.ox = panRef.current.ox + (p.x - panRef.current.x); camRef.current.oy = panRef.current.oy + (p.y - panRef.current.y); return; }
+    const world = screenToWorld(camRef.current, p.x, p.y); cursorRef.current = world; const st = useBoard.getState(); setHud(`(${faNum(world.x, 1)}٬ ${faNum(world.y, 1)})`);
+    if (dragRef.current && dragRef.current.pointerId === e.pointerId) { st.movePoint(dragRef.current.id, world.x, world.y); return; }
+    const hit = hitTest(st.objects, world, 14 / camRef.current.scale); hoverRef.current = hit?.id ?? null;
+  };
+  const onPointerUp = (e: React.PointerEvent) => { pointersRef.current.delete(e.pointerId); if (dragRef.current?.pointerId === e.pointerId) { dragRef.current = null; useBoard.getState().persist(); } if (panRef.current?.pointerId === e.pointerId) panRef.current = null; if (pointersRef.current.size < 2) pinchRef.current = null; };
+  const cursor = tool === "delete" ? "cell" : tool === "select" ? "default" : spaceRef.current ? "grab" : "crosshair";
+  return <div className="relative h-full w-full"><canvas ref={canvasRef} className="block h-full w-full touch-none" style={{ cursor }} onWheel={onWheel} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onContextMenu={(e) => e.preventDefault()} /><div className="pointer-events-none absolute start-3 top-3 font-medium tabular-nums text-xs text-muted">{hud}</div><Button type="button" size="icon-sm" variant="secondary" className="absolute end-3 top-3" aria-label="جا شدن در قاب" onClick={fitView}><Maximize2 className="size-4" /></Button></div>;
+}
