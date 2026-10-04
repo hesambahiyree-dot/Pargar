@@ -1,3 +1,89 @@
-import { useMemo, useState } from "react"; import { Shapes } from "lucide-react"; import { TOOLS,TEMPLATES } from "@/lib/geometry/tools"; import { useBoard } from "@/lib/geometry/store"; import { Button } from "@/components/ui/button"; import { cn } from "@/lib/utils";
-export function Toolbar(){const tool=useBoard(s=>s.tool),setTool=useBoard(s=>s.setTool),insert=useBoard(s=>s.insertTemplate);const [open,setOpen]=useState(true);const groups=useMemo(()=>Array.from(new Set(TOOLS.map(t=>t.group))),[]);return <div className="px-2 py-2"><div className="flex items-center gap-2 overflow-x-auto"><Button variant={open?"secondary":"ghost"} size="sm" onClick={()=>setOpen(v=>!v)}><Shapes className="size-4"/>ابزارها</Button><div className="h-5 w-px bg-border"/><div className="flex gap-1">{TOOLS.slice(0,6).map(t=><ToolButton key={t.id} t={t} active={tool===t.id} onClick={()=>setTool(t.id)}/>)}</div><div className="ms-auto flex gap-1">{TEMPLATES.slice(0,3).map(t=><Button key={t.id} size="sm" variant="ghost" onClick={()=>insert(t.id)}>+ {t.label}</Button>)}</div></div>{open&&<div className="mt-2 flex flex-wrap gap-2 rounded-xl border bg-surface p-2">{groups.map(g=><div key={g} className="min-w-[170px]"><div className="mb-1 px-2 text-[11px] font-semibold text-subtle">{g}</div><div className="flex flex-wrap gap-1">{TOOLS.filter(t=>t.group===g).map(t=><ToolButton key={t.id} t={t} active={tool===t.id} onClick={()=>setTool(t.id)} compact/>)}</div></div>)}</div>}</div>}
-function ToolButton({t,active,onClick,compact=false}:{t:(typeof TOOLS)[number];active:boolean;onClick:()=>void;compact?:boolean}){const I=t.icon;return <button title={`${t.hint} · ${t.shortcut}`} className={cn("flex items-center gap-1.5 rounded-lg border px-2 py-1.5 text-xs transition",active?"bg-accent text-accent-fg":"bg-surface hover:bg-surface-2",compact&&"min-w-[82px]")} onClick={onClick}><I className="size-4"/><span>{t.label}</span>{!compact&&<kbd className="hidden text-[10px] opacity-60 sm:inline">{t.shortcut}</kbd>}</button>}
+import { TEMPLATES, TOOLS } from "@/lib/geometry/tools";
+import { useBoard } from "@/lib/geometry/store";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { Shapes } from "lucide-react";
+import { useState } from "react";
+
+export function Toolbar() {
+  const tool = useBoard((s) => s.tool);
+  const setTool = useBoard((s) => s.setTool);
+  const insertTemplate = useBoard((s) => s.insertTemplate);
+  const [openTpl, setOpenTpl] = useState(false);
+  let lastGroup = "";
+
+  return (
+    <div className="flex items-center gap-1 overflow-x-auto px-2 py-2">
+      {TOOLS.map((t) => {
+        const showSep = t.group !== lastGroup;
+        lastGroup = t.group;
+        const Icon = t.icon;
+        return (
+          <span key={t.id} className="flex items-center gap-1">
+            {showSep && t.id !== "select" ? (
+              <span className="mx-1 hidden h-6 w-px bg-border sm:block" />
+            ) : null}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant={tool === t.id ? "default" : "ghost"}
+                  aria-label={t.label}
+                  aria-pressed={tool === t.id}
+                  className={cn("size-10 shrink-0", tool === t.id && "shadow-[var(--shadow-border)]")}
+                  onClick={() => setTool(t.id)}
+                >
+                  <Icon className="size-4" strokeWidth={1.75} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <span className="font-medium">{t.label}</span>
+                <span className="mt-0.5 block text-[11px] opacity-80">
+                  {t.hint}
+                  {t.shortcut ? ` · ${t.shortcut}` : ""}
+                </span>
+              </TooltipContent>
+            </Tooltip>
+          </span>
+        );
+      })}
+      <span className="mx-1 hidden h-6 w-px bg-border sm:block" />
+      <div className="relative shrink-0">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              size="icon"
+              variant={openTpl ? "secondary" : "ghost"}
+              aria-label="شکل آماده"
+              className="size-10"
+              onClick={() => setOpenTpl((v) => !v)}
+            >
+              <Shapes className="size-4" strokeWidth={1.75} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">شکل آماده برای تخته</TooltipContent>
+        </Tooltip>
+        {openTpl ? (
+          <div className="absolute top-full z-20 mt-1 w-44 rounded-xl bg-surface p-1 shadow-[var(--shadow-border)]">
+            {TEMPLATES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                className="w-full rounded-lg px-3 py-2 text-right text-sm hover:bg-surface-2"
+                onClick={() => {
+                  insertTemplate(t.id);
+                  setOpenTpl(false);
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
