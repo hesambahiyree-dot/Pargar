@@ -1,15 +1,10 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import { AppShell } from "./components/board/AppShell";
+import ReactDOM from "react-dom/client";
+import { RouterProvider } from "@tanstack/react-router";
+import { getRouter } from "./router";
+import "./styles.css";
 
-const root = document.getElementById("root");
+const router = getRouter();
 
-if (!root) {
-  throw new Error("Pargar root element was not found");
-}
-
-createRoot(root).render(
-  <React.StrictMode>
-    <AppShell />
-  </React.StrictMode>,
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <RouterProvider router={router} />,
 );
