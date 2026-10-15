@@ -10,10 +10,11 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
-    "electron:dev": "npm run build && electron .",
-    "electron:build": "npm run build && electron-builder --win --publish never",
+    "electron:dev": "npm run prepare:icons && npm run build && electron .",
+    "electron:build": "npm run prepare:icons && npm run build && electron-builder --win --publish never",
     "android:sync": "npm run build && cap sync android",
-    "android:build": "npm run android:sync && cd android && ./gradlew assembleDebug"
+    "android:build": "npm run prepare:icons && npm run android:sync && cd android && ./gradlew assembleDebug",
+    "prepare:icons": "node scripts/prepare-icons.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
@@ -43,14 +44,37 @@
     "electron-builder": "^26.0.12",
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.2",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.34.4"
   },
   "build": {
     "appId": "ir.pargar.app",
     "productName": "پرگار",
-    "files": ["dist/**/*", "electron/**/*", "capacitor.config.ts", "package.json"],
-    "directories": {"output": "release"},
-    "win": {"target": [{"target": "nsis", "arch": ["x64"]}]},
-    "nsis": {"oneClick": false, "allowToChangeInstallationDirectory": true}
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "capacitor.config.ts",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
