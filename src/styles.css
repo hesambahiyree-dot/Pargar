@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: Vazirmatn;
+  src: url("/fonts/Vazirmatn-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vazirmatn;
+  src: url("/fonts/Vazirmatn-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vazirmatn;
+  src: url("/fonts/Vazirmatn-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f5f7fb;
+  --board: #ffffff;
+  --ink: #172033;
+  --navy: #18263d;
+  --blue: #356ae6;
+  --teal: #26b7c8;
+  --orange: #f39a54;
+  --muted: #64748b;
+  --grid: #e0e7f0;
+  --line: #d5deea;
+  --night: #101827;
+  color-scheme: light;
+}
+
+.dark {
+  --paper: #101827;
+  --board: #18263d;
+  --ink: #f5f7fb;
+  --navy: #0c1424;
+  --blue: #6b93f0;
+  --teal: #3ecbda;
+  --orange: #f39a54;
+  --muted: #94a3b8;
+  --grid: #24344d;
+  --line: #2c3e5a;
+  --night: #070d18;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+  --color-paper: var(--paper);
+  --color-board: var(--board);
+  --color-ink: var(--ink);
+  --color-navy: var(--navy);
+  --color-blue: var(--blue);
+  --color-teal: var(--teal);
+  --color-orange: var(--orange);
+  --color-muted: var(--muted);
+  --color-grid: var(--grid);
+  --color-line: var(--line);
+  --color-night: var(--night);
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--grid) 80%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--grid) 80%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--ink);
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
