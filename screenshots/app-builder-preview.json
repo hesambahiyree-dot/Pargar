@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "پرگار",
+      "hasCanvas": false,
+      "bodyTextLen": 458,
+      "bodyTextHash": "4847039d7e18fecbc96f3992fe55d860e66203c908f4ac79a0d07307d589f348",
+      "bodyTextPrefix": "بازگشت پرگار راهنما پایهٔ هشتم و نهم · رسمی و تکمیلی هندسه را بک",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "پرگار",
+      "hasCanvas": false,
+      "bodyTextLen": 458,
+      "bodyTextHash": "4847039d7e18fecbc96f3992fe55d860e66203c908f4ac79a0d07307d589f348",
+      "bodyTextPrefix": "بازگشت پرگار راهنما پایهٔ هشتم و نهم · رسمی و تکمیلی هندسه را بک",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
