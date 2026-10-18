@@ -1,6 +1,5 @@
 import { pendingMigrations } from "../../scripts/migration-plan.mjs";
 
-/** Which database backend is active. */
 export type DbSource = "neon" | "pglite";
 
 const rawDatabaseUrl =
@@ -93,9 +92,7 @@ async function createPgliteSql(): Promise<Sql> {
       import: "default",
       eager: true,
     }) as Record<string, string>;
-    const doneRows = await pg.query<{ name: string }>(
-      "select name from _migrations",
-    );
+    const doneRows = await pg.query<{ name: string }>("select name from _migrations");
     const done = doneRows.rows.map((r) => r.name);
     for (const { name, path } of pendingMigrations(Object.keys(migrations), done)) {
       await pg.transaction(async (tx) => {
