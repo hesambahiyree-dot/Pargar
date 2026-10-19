@@ -134,5 +134,7 @@
       "createStartMenuShortcut": true
     }
   },
-  "main": "electron/main.cjs"
+  "main": "electron/main.cjs",
+  "version": "1.0.0",
+  "description": "پرگار؛ تختهٔ رسم هندسه و آموزش ریاضی، با اجرای آفلاین"
 }
