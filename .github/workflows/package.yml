@@ -3,7 +3,7 @@ name: Package Pargar for Android and Windows
 on:
   workflow_dispatch:
   push:
-    branches: ["fix/**"]
+    branches: ["main", "fix/**"]
     paths:
       - "src/**"
       - "public/**"
