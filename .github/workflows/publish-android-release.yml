@@ -1,6 +1,10 @@
 name: Publish Pargar Android APK
 
 on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/publish-android-release.yml"
   workflow_dispatch:
 
 permissions:
