@@ -34,7 +34,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
       - run: npm install --legacy-peer-deps --no-audit --no-fund
       - name: Build offline web app and Android project
         run: npm run build:android
