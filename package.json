@@ -20,7 +20,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "build:android": "npm run icons && npm run build && cap add android && node scripts/copy-android-icons.mjs && cap sync android",
-    "build:windows": "npm run icons && npm run build && electron-builder --win nsis",
+    "build:windows": "npm run icons && npm run build && electron-builder --win nsis --publish never",
     "icons": "node scripts/prepare-native-icons.mjs"
   },
   "dependencies": {
