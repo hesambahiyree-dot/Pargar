@@ -3,7 +3,7 @@ const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const webRoot = path.join(__dirname, "..", ".output", "public");
+const webRoot = path.join(__dirname, "..", ".vercel", "output", "static" );
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
