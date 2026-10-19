@@ -11,6 +11,7 @@ const child = spawn(
       ...process.env,
       VITE_AUTH_ENABLED: "false",
       VITE_GROK_EXTENSIONS: "0",
+      VITE_OFFLINE_BUILD: "1",
       DATABASE_URL: "",
     },
   },
