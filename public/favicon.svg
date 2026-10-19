@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="14" fill="#18263D"/><circle cx="32" cy="32" r="18" stroke="#26B7C8" stroke-width="3"/><path d="M32 14v36M14 32h36" stroke="#F5F7FB" stroke-width="2.5" stroke-linecap="round"/><circle cx="32" cy="32" r="4" fill="#F39A54"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title">
+  <title>نشان پرگار</title>
+  <rect width="192" height="192" rx="18" fill="#18263D"/>
+  <circle cx="92" cy="88" r="62" fill="none" stroke="#F5F0E6" stroke-width="8"/>
+  <circle cx="92" cy="88" r="48" fill="none" stroke="#F5F0E6" stroke-opacity=".28" stroke-width="3"/>
+  <path d="M92 0 V24 M92 152 V188 M8 88 H26 M158 88 H184" stroke="#F5F0E6" stroke-width="5" stroke-linecap="round"/>
+  <path d="M92 28 L64 116 L92 100 L120 116 Z" fill="#F4A261" stroke="#F5F0E6" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M92 100 V153" stroke="#F5F0E6" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="92" cy="88" r="8" fill="#F5F0E6"/>
+</svg>
