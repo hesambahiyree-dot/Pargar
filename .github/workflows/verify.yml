@@ -34,6 +34,6 @@ jobs:
         if: success()
         with:
           name: pargar-web-build
-          path: .output/public/
+          path: .vercel/output/static/
           if-no-files-found: error
           retention-days: 14
