@@ -4,7 +4,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-export const DEFAULT_APP_NAME = "Grok App";
+export const DEFAULT_APP_NAME = "پرگار";
 export const OG_SERVICE_URL_DEFAULT = "https://og.grok.me";
 export const OG_SITE_REL_PATH = "src/lib/og/site.json";
 
@@ -104,17 +104,17 @@ export function renderWebManifest(hostHeader) {
   return JSON.stringify({
     name, short_name: name, id: "/", start_url: "/", scope: "/",
     display: "standalone", background_color: "#000000", theme_color: "#000000",
-    icons: [{ src: "/__grok/icon-180.png", sizes: "180x180", type: "image/png" }],
+    icons: [{ src: "/pargar-icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }],
   }, null, 2);
 }
 
 export function grokPwaHeadTags(appName = DEFAULT_APP_NAME) {
   return [
-    ["manifest", '<link rel="manifest" href="/__grok/manifest.webmanifest">'],
-    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/__grok/icon-180.png">'],
+    ["manifest", '<link rel="manifest" href="/manifest.webmanifest">'],
+    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/pargar-icon.svg">'],
     ["apple-mobile-web-app-title", `<meta name="apple-mobile-web-app-title" content="${escapeHtml(appName)}">`],
     ["apple-mobile-web-app-status-bar-style", '<meta name="apple-mobile-web-app-status-bar-style" content="black">'],
-    ["theme-color", '<meta name="theme-color" content="#000000">'],
+    ["theme-color", '<meta name="theme-color" content="#18263D">'],
   ];
 }
 
