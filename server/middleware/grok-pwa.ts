@@ -2,7 +2,7 @@
  * Deployed-app (Nitro) half of the platform PWA chrome.
  */
 import installPageTemplate from "../../scripts/install-page.html?raw";
-import { grokOgIdentity } from "virtual:grok-og-identity";
+import { ogIdentity } from "virtual:grok-og-identity";
 import {
   acceptsHtml,
   createHeadInjector,
@@ -26,7 +26,7 @@ function requestHost(event: GrokPwaEvent): string {
 function injectHeadStreaming(response: Response, host: string): Response {
   const injector = createHeadInjector({
     host,
-    site: grokOgIdentity.site,
+    site: ogIdentity,
   });
   const transformed = response.body!.pipeThrough(
     new TransformStream<Uint8Array, Uint8Array>({
