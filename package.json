@@ -1,5 +1,5 @@
 {
-  "name": "app-builder-workspace",
+  "name": "pargar",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "node scripts/with-app-env.mjs vite dev --host 0.0.0.0 --port 8080",
-    "build": "node scripts/with-app-env.mjs vite build && npm run db:migrate",
+    "build": "node scripts/build-offline.mjs",
     "db:migrate": "node scripts/migrate.mjs",
     "build:dev": "node scripts/with-app-env.mjs vite build --mode development",
     "preview": "node scripts/with-app-env.mjs vite preview",
@@ -18,7 +18,10 @@
     "check:auth": "node scripts/check-auth-invariant.mjs",
     "test": "node --test 'scripts/**/*.test.mjs' && node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts src/lib/preview-path-prefix.test.ts src/lib/geometry/engine.test.ts src/lib/app-contract.test.ts",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build:android": "npm run icons && npm run build && cap add android && node scripts/copy-android-icons.mjs && cap sync android",
+    "build:windows": "npm run icons && npm run build && electron-builder --win nsis --publish never",
+    "icons": "node scripts/prepare-native-icons.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",
@@ -76,7 +79,9 @@
     "vaul": "^1.1.2",
     "vite": "^8.2.0",
     "zod": "^4.4.0",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
@@ -92,6 +97,44 @@
     "globals": "^15.15.0",
     "playwright": "^1.62.0",
     "prettier": "^3.4.0",
-    "typescript-eslint": "^8.56.1"
-  }
+    "typescript-eslint": "^8.56.1",
+    "@capacitor/cli": "^7.4.3",
+    "electron": "^38.4.0",
+    "electron-builder": "^26.0.12",
+    "sharp": "^0.34.5",
+    "png-to-ico": "^3.0.1"
+  },
+  "build": {
+    "appId": "ai.pargar.desktop",
+    "productName": "پرگار",
+    "directories": {
+      "output": "release",
+      "buildResources": "public"
+    },
+    "files": [
+      "electron/**/*",
+      ".output/public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/pargar.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "main": "electron/main.cjs",
+  "version": "1.0.0",
+  "description": "پرگار؛ تختهٔ رسم هندسه و آموزش ریاضی، با اجرای آفلاین"
 }

@@ -60,7 +60,7 @@ export function useRefetchWhenConnectorReady(
 
     const tick = async () => {
       if (cancelled) return;
-      if (readinessProbeExhausted(startedAt, Date.now(), READINESS_PROBE_MAX_TOTAL_MS)) {
+      if (readinessProbeExhausted(startedAt, Date.now())) {
         setTimedOut(true);
         return;
       }

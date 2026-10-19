@@ -1,0 +1,81 @@
+name: Package Pargar for Android and Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["fix/**"]
+    paths:
+      - "src/**"
+      - "public/**"
+      - "scripts/**"
+      - "package.json"
+      - "capacitor.config.ts"
+      - "electron/**"
+      - ".github/workflows/package.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pargar-packages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
+      - run: npm install --legacy-peer-deps --no-audit --no-fund
+      - name: Build offline web app and Android project
+        run: npm run build:android
+        env:
+          VITE_AUTH_ENABLED: "false"
+          VITE_GROK_EXTENSIONS: "0"
+          VITE_OFFLINE_BUILD: "1"
+          DATABASE_URL: ""
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pargar-android-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    name: Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --legacy-peer-deps --no-audit --no-fund
+      - name: Build offline web app and Windows installer
+        run: npm run build:windows
+        env:
+          VITE_AUTH_ENABLED: "false"
+          VITE_GROK_EXTENSIONS: "0"
+          DATABASE_URL: ""
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pargar-windows-installer
+          path: release/*.exe
+          if-no-files-found: error
+          retention-days: 14

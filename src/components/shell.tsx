@@ -85,7 +85,7 @@ export function Shell({
           بازگشت
         </button>
         <Link to="/" className="mx-auto flex items-center rounded-lg bg-paper px-2 py-1" aria-label="پرگار، صفحهٔ اصلی">
-          <img src="/logo-pargar.png" alt="" className="h-8 w-auto" />
+          <img src="/pargar-icon.svg" alt="" className="h-8 w-auto" />
         </Link>
         <p className="sr-only">{title}</p>
         <button

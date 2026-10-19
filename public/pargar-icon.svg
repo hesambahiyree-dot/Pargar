@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title>نشان پرگار</title>
+  <rect width="128" height="128" rx="30" fill="#18263D"/>
+  <circle cx="64" cy="61" r="37" fill="none" stroke="#F5F0E6" stroke-width="5"/>
+  <circle cx="64" cy="61" r="27" fill="none" stroke="#F5F0E6" stroke-opacity=".28" stroke-width="1.5"/>
+  <path d="M64 24 L47 78 L64 68 L81 78 Z" fill="#F4A261" stroke="#F5F0E6" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M64 68 L64 100" stroke="#F5F0E6" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="64" cy="61" r="5" fill="#F5F0E6"/>
+  <path d="M64 12 V20 M64 102 V110 M15 61 H23 M105 61 H113" stroke="#F5F0E6" stroke-width="3" stroke-linecap="round"/>
+</svg>
