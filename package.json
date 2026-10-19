@@ -18,7 +18,9 @@
     "check:auth": "node scripts/check-auth-invariant.mjs",
     "test": "node --test 'scripts/**/*.test.mjs' && node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts src/lib/preview-path-prefix.test.ts src/lib/geometry/engine.test.ts src/lib/app-contract.test.ts",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build:android": "npm run build && cap add android && cap sync android",
+    "build:windows": "npm run build && electron-builder --win nsis"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",
@@ -76,7 +78,9 @@
     "vaul": "^1.1.2",
     "vite": "^8.2.0",
     "zod": "^4.4.0",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
@@ -92,6 +96,39 @@
     "globals": "^15.15.0",
     "playwright": "^1.62.0",
     "prettier": "^3.4.0",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.56.1",
+    "@capacitor/cli": "^7.4.3",
+    "electron": "^38.4.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "ai.pargar.desktop",
+    "productName": "پرگار",
+    "directories": {
+      "output": "release",
+      "buildResources": "public"
+    },
+    "files": [
+      "electron/**/*",
+      ".output/public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/pargar.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }
