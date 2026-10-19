@@ -134,7 +134,12 @@ export default defineConfig(({ command, isPreview }) => ({
     appEnvPlugin(),
     grokPwaPlugin(),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      spa: {
+        enabled: process.env.VITE_OFFLINE_BUILD === "1",
+        prerender: { outputPath: "/index.html" },
+      },
+    }),
     ...(command === "build" || isPreview
       ? [
           nitro({
