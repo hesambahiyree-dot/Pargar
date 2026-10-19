@@ -28,14 +28,8 @@ export function settleWithin(start, timeoutMs) {
 }
 
 /** @param {{livePreview: boolean, hasBearer: boolean, requestSignOut: () => unknown | Promise<unknown>, clearToken: () => void, redirect: () => void, timeoutMs?: number}} options */
-export async function runSignOut({
-  livePreview,
-  hasBearer,
-  requestSignOut,
-  clearToken,
-  redirect,
-  timeoutMs,
-} = options) {
+export async function runSignOut(options) {
+  const { livePreview, hasBearer, requestSignOut, clearToken, redirect, timeoutMs } = options;
   if (livePreview) {
     if (hasBearer) {
       await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
@@ -58,13 +52,8 @@ export async function runSignOut({
 }
 
 /** @param {{livePreview: boolean, hasBearer: boolean, requestSignOut: () => unknown | Promise<unknown>, clearToken: () => void, timeoutMs?: number}} options */
-export async function runPreSignInSignOut({
-  livePreview,
-  hasBearer,
-  requestSignOut,
-  clearToken,
-  timeoutMs,
-} = options) {
+export async function runPreSignInSignOut(options) {
+  const { livePreview, hasBearer, requestSignOut, clearToken, timeoutMs } = options;
   if (hasBearer || !livePreview) {
     await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
   }
