@@ -29,15 +29,7 @@ function SettingsPage() {
           <h2 className="font-black">نماد برنامه</h2>
           <p className="mt-2 text-sm leading-7 text-muted">نشان پرگار با الهام از ابزار هندسه و رنگ‌های خود برنامه طراحی شده است.</p>
           <img src="/pargar-icon.svg" alt="نماد پرگار" className="mt-3 h-20 w-20 rounded-2xl" />
-          <ul className="mt-3 space-y-1 text-sm text-blue">
-            <li><a href="/icons/android/mipmap-xxxhdpi.png">اندروید ۱۹۲</a></li>
-            <li><a href="/icons/android/mipmap-xxhdpi.png">اندروید ۱۴۴</a></li>
-            <li><a href="/icons/android/mipmap-xhdpi.png">اندروید ۹۶</a></li>
-            <li><a href="/icons/android/mipmap-hdpi.png">اندروید ۷۲</a></li>
-            <li><a href="/icons/android/mipmap-mdpi.png">اندروید ۴۸</a></li>
-            <li><a href="/icons/windows/pargar.ico">ویندوز ico</a></li>
-          </ul>
-        </section>
+      </section>
         <section className="mt-4 rounded-3xl border border-line bg-board p-4">
           <h2 className="font-black">پاک کردن همهٔ تخته‌ها</h2>
           <button type="button" className="h-11 rounded-xl bg-orange px-4 font-bold text-night" onClick={() => setAsk(true)}>
