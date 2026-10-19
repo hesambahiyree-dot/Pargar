@@ -27,8 +27,8 @@ function SettingsPage() {
         </section>
         <section className="mt-4 rounded-3xl border border-line bg-board p-4">
           <h2 className="font-black">نماد برنامه</h2>
-          <p className="mt-2 text-sm leading-7 text-muted">نشان پرگار بدون طراحی دوباره استفاده شده. اندازه‌های اندروید و فایل ویندوز از همان تصویر ساخته شده‌اند.</p>
-          <img src="/logo-pargar.png" alt="نماد پرگار" className="mt-3 h-20 w-auto rounded-xl bg-paper p-2" />
+          <p className="mt-2 text-sm leading-7 text-muted">نشان پرگار با الهام از ابزار هندسه و رنگ‌های خود برنامه طراحی شده است.</p>
+          <img src="/pargar-icon.svg" alt="نماد پرگار" className="mt-3 h-20 w-20 rounded-2xl" />
           <ul className="mt-3 space-y-1 text-sm text-blue">
             <li><a href="/icons/android/mipmap-xxxhdpi.png">اندروید ۱۹۲</a></li>
             <li><a href="/icons/android/mipmap-xxhdpi.png">اندروید ۱۴۴</a></li>
