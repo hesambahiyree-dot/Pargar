@@ -3,10 +3,12 @@
 export const PREVIEW_SIGN_OUT_TIMEOUT_MS = 1500;
 export const DEPLOYED_SIGN_OUT_TIMEOUT_MS = 10_000;
 
+/** @param {boolean} livePreview */
 export function signOutTimeoutMs(livePreview) {
   return livePreview ? PREVIEW_SIGN_OUT_TIMEOUT_MS : DEPLOYED_SIGN_OUT_TIMEOUT_MS;
 }
 
+/** @param {() => unknown | Promise<unknown>} start @param {number} timeoutMs */
 export function settleWithin(start, timeoutMs) {
   return new Promise((resolve) => {
     const timer = setTimeout(() => resolve("timeout"), timeoutMs);
@@ -25,6 +27,7 @@ export function settleWithin(start, timeoutMs) {
   });
 }
 
+/** @param {{livePreview: boolean, hasBearer: boolean, requestSignOut: () => unknown | Promise<unknown>, clearToken: () => void, redirect: () => void, timeoutMs?: number}} options */
 export async function runSignOut({
   livePreview,
   hasBearer,
@@ -32,7 +35,7 @@ export async function runSignOut({
   clearToken,
   redirect,
   timeoutMs,
-}) {
+} = options) {
   if (livePreview) {
     if (hasBearer) {
       await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
@@ -54,13 +57,14 @@ export async function runSignOut({
   redirect();
 }
 
+/** @param {{livePreview: boolean, hasBearer: boolean, requestSignOut: () => unknown | Promise<unknown>, clearToken: () => void, timeoutMs?: number}} options */
 export async function runPreSignInSignOut({
   livePreview,
   hasBearer,
   requestSignOut,
   clearToken,
   timeoutMs,
-}) {
+} = options) {
   if (hasBearer || !livePreview) {
     await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
   }
